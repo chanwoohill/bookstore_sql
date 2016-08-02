@@ -2,33 +2,42 @@
 
 SELECT e.isbn
   FROM editions AS e
-    JOIN publishers on e.publisher_id = publishers.id 
+    JOIN publishers 
+    ON e.publisher_id = publishers.id 
   WHERE publishers.name = 'Random House';
 
 #Exercise 2 
 
 SELECT e.isbn, title
   FROM editions AS e
-    JOIN publishers on e.publisher_id = publishers.id 
-    JOIN books on e.book_id = books.id
+    JOIN publishers 
+    ON e.publisher_id = publishers.id 
+    JOIN books 
+    ON e.book_id = books.id
   WHERE publishers.name = 'Random House';
 
 #Exercise 3
 
 SELECT e.isbn, title, stock, retail
   FROM editions AS e
-    JOIN publishers on e.publisher_id = publishers.id 
-    JOIN books on e.book_id = books.id
-    JOIN stock on e.isbn = stock.isbn
+    JOIN publishers 
+    ON e.publisher_id = publishers.id 
+    JOIN books 
+    ON e.book_id = books.id
+    JOIN stock 
+    ON e.isbn = stock.isbn
   WHERE publishers.name = 'Random House';
 
 #Exercise 4
 
 SELECT e.isbn, title, stock, retail
   FROM editions AS e
-    JOIN publishers on e.publisher_id = publishers.id 
-    JOIN books on e.book_id = books.id
-    JOIN stock on e.isbn = stock.isbn
+    JOIN publishers 
+    ON e.publisher_id = publishers.id 
+    JOIN books 
+    ON e.book_id = books.id
+    JOIN stock 
+    ON e.isbn = stock.isbn
   WHERE publishers.name = 'Random House' AND stock != 0;
 
 #Exercise 5
@@ -38,9 +47,12 @@ SELECT e.isbn, title, stock, retail,
        WHEN type = 'p' THEN 'paperback' 
   END AS type 
   FROM editions AS e 
-    JOIN publishers on e.publisher_id = publishers.id 
-    JOIN books on e.book_id = books.id
-    JOIN stock on e.isbn = stock.isbn
+    JOIN publishers 
+    ON e.publisher_id = publishers.id 
+    JOIN books 
+    ON e.book_id = books.id
+    JOIN stock 
+    ON e.isbn = stock.isbn
   WHERE publishers.name = 'Random House' AND stock != 0;
 
 #Exercise 6 
@@ -67,7 +79,8 @@ SELECT Round(sum(s.cost*s.stock)/sum(s.stock),2) AS "Average Cost",
 
 SELECT book_id 
   FROM editions
-    JOIN stock ON editions.isbn = stock.isbn 
+    JOIN stock 
+    ON editions.isbn = stock.isbn 
   ORDER BY stock DESC
   LIMIT 1; 
 
@@ -76,9 +89,10 @@ SELECT book_id
 SELECT authors.id AS ID, 
   concat(first_name, ' ', last_name) AS "Full Name", 
   count(books.id) as "Number of Books"
-  FROM authors
-    JOIN books ON authors.id = books.author_id
-  GROUP BY authors.id;
+  FROM authors as a 
+    JOIN books 
+    ON a.id = books.author_id
+  GROUP BY a.id;
 
 #Exercise 11
 
@@ -86,16 +100,17 @@ SELECT authors.id AS ID,
   concat(first_name, ' ', last_name) AS "Full Name", 
   count(books.id) as "Number of Books"
   FROM authors
-    JOIN books ON authors.id = books.author_id
+    JOIN books 
+    ON authors.id = books.author_id
   GROUP BY authors.id
   ORDER BY "Number of Books" DESC;
 
 #Exercise 12
 
-SELECT books.title 
-  From books 
-    JOIN editions
-    ON books.id = editions.book_id
+SELECT b.title 
+  From books as b
+    JOIN editions as e
+    ON b.id = e.book_id
   GROUP BY title
   HAVING count(DISTINCT type) > 1; 
 
@@ -104,7 +119,9 @@ SELECT books.title
 SELECT p.name, ROUND((SUM(s.stock*s.retail))/SUM(s.stock),2) AS "Average book sale price", 
 SUM(e.edition) AS "Number of editions published"
 FROM publishers AS p
-  JOIN editions AS e ON p.id = e.publisher_id
-  JOIN stock as s ON s.isbn = e.isbn
+  JOIN editions AS e 
+  ON p.id = e.publisher_id
+  JOIN stock as s 
+  ON s.isbn = e.isbn
 WHERE s.stock > 0
 GROUP BY p.name; 
